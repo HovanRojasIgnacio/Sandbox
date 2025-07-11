@@ -1,24 +1,27 @@
 package hr.sandbox.pixels;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-
+import hr.sandbox.pixels.GameEngine.Materials;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class SandSimulator {
+public class SandSimulator implements Simulator{
 
     private int width;
     private int height;
     private Pixmap pixmap;
     private boolean[][] sand;
+    private Materials[][] grid;
 
-    public SandSimulator(int width, int height) {
+    public SandSimulator(Materials[][] grid, int width, int height) {
         this.width = width;
         this.height = height;
+        this.grid = grid;
         sand = new boolean[width][height];
         pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
     }
@@ -29,7 +32,7 @@ public class SandSimulator {
         pixmap.setColor(Color.YELLOW);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (sand[x][y]) {
+                if (grid[x][y].equals(Materials.sand)) {
                     pixmap.drawPixel(x, y);
                 }
             }
@@ -39,41 +42,37 @@ public class SandSimulator {
         pixmap.dispose();
 
     }
-    public void resize(int width, int height) {
-        this.width = width;
-        this.height = height;
 
-        pixmap.dispose();
-        pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
-
-        boolean[][] newSand = new boolean[width][height];
-        for (int x = 0; x < Math.min(sand.length, width); x++) {
-            System.arraycopy(sand[x], 0, newSand[x], 0, Math.min(sand[0].length, height));
-        }
-        sand = newSand;
-    }
     private void handleInput() {
         if (Gdx.input.isTouched()) {
             int mouseX = Gdx.input.getX();
             int mouseY = Gdx.input.getY();
             if (mouseX >= 0 && mouseX < width && mouseY >= 0 && mouseY < height) {
-                sand[mouseX][mouseY] = true;
+                grid[mouseX][mouseY] = Materials.sand;
             }
 
         }
     }
-    public void update() {
+    public Materials[][] simulate(Materials[][] grid) {
+        this.grid = grid;
         handleInput();
         updateGravity();
         updateHorizontally();
         drawSand();
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+            printGrid();
+        }
+        return grid;
     }
     private void updateGravity() {
         for (int y = height -2; y >= 0; y--) {
             for (int x = 0; x < width; x++) {
-                if (sand[x][y] && !sand[x][y + 1]) {
-                    sand[x][y] = false;
-                    sand[x][y + 1] = true;
+                if (grid[x][y]==Materials.sand && grid[x][y + 1] == Materials.empty ) {
+                    grid[x][y] = Materials.empty;
+                    grid[x][y + 1] = Materials.sand;
+                } else if (grid[x][y]==Materials.sand && grid[x][y + 1] == Materials.water ) {
+                    grid[x][y] = Materials.water;
+                    grid[x][y + 1] = Materials.sand;
                 }
             }
         }
@@ -89,19 +88,21 @@ public class SandSimulator {
         Collections.shuffle(horizontalPositions);
         for (int y = height -2; y >= 0; y--) {
             for (int x: horizontalPositions) {
-                if (sand[x][y] && sand[x][y + 1]) {
-                    if (!sand[x-1][y] && !sand[x + 1][y]) {
+                if (grid[x][y]==Materials.sand && grid[x][y + 1] == Materials.empty ) {
+                    if (grid[x-1][y] == Materials.empty && grid[x+1][y] == Materials.empty) {
                         int direction = rand.nextBoolean() ? -1 : 1;
-                        sand[x][y] = false;
-                        sand[x + direction][y] = true;
+                        grid[x][y] = Materials.empty;
+                        grid[x + direction][y] = Materials.sand;
                     }
-                    else if (!sand[x-1][y] && sand[x + 1][y] && (!sand[x-1][y+1] || !sand[x+1][y+1])) {
-                        sand[x][y] = false;
-                        sand[x -1][y] = true;
+                    else if (grid[x-1][y] == Materials.empty && grid[x+1][y]==Materials.sand
+                            && (grid[x-1][y+1] == Materials.empty || grid[x+1][y+1] == Materials.empty)) {
+                        grid[x][y] = Materials.empty;
+                        grid[x - 1][y] = Materials.sand;
                     }
-                    else if (sand[x-1][y] && !sand[x + 1][y] && (!sand[x-1][y+1] || !sand[x+1][y+1])) {
-                        sand[x][y] = false;
-                        sand[x + 1][y] = true;
+                    else if (grid[x-1][y] == Materials.sand && grid[x+1][y] == Materials.empty
+                            && (grid[x-1][y+1] == Materials.empty || grid[x+1][y+1] == Materials.empty)) {
+                        grid[x][y] = Materials.empty;
+                        grid[x + 1][y] = Materials.sand;
                     }
                 }
             }
@@ -110,5 +111,15 @@ public class SandSimulator {
 
     public Pixmap getPixmap() {
         return pixmap;
+    }
+    public void printGrid() {
+        // Outer loop iterates through rows (y-coordinate)
+        for (int y = 0; y < Math.min(grid[0].length, height); y++) {
+            // Inner loop iterates through columns (x-coordinate)
+            for (int x = 0; x < Math.min(grid.length, width); x++) {
+                System.out.print(grid[x][y] + " "); // Note: grid[x][y] remains the same as it's how your data is structured
+            }
+            System.out.println(); // Move to the next line after printing a full row
+        }
     }
 }
