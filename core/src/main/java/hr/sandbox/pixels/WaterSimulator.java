@@ -1,38 +1,33 @@
 package hr.sandbox.pixels;
 
-import com.badlogic.gdx.Gdx;
-import hr.sandbox.pixels.GameEngine.Materials;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class SandSimulator extends AbstractSimulator{
+public class WaterSimulator extends AbstractSimulator{
 
-
-    public SandSimulator(Materials[][] grid, int width, int height) {
+    public WaterSimulator(GameEngine.Materials[][] grid, int width, int height) {
         super(grid, width, height);
     }
 
     public void dispose(){
-
     }
 
 
-    public Materials[][] simulate(Materials[][] grid) {
+    public GameEngine.Materials[][] simulate(GameEngine.Materials[][] grid) {
         this.grid = grid;
         updateGravity();
         updateHorizontally();
-
         return grid;
     }
     @Override
     protected void updateGravity() {
         for (int y = height -2; y >= 0; y--) {
             for (int x = 0; x < width; x++) {
-                if (grid[x][y]==Materials.sand && !grid[x][y + 1].isSolid()) {
+                if (grid[x][y]== GameEngine.Materials.water && grid[x][y].isMoreDenseThan(grid[x][y + 1].getDensity())) {
                     grid[x][y] = grid[x][y + 1];
-                    grid[x][y + 1] = Materials.sand;
+                    grid[x][y + 1] = GameEngine.Materials.water;
                 }
             }
         }
@@ -48,22 +43,13 @@ public class SandSimulator extends AbstractSimulator{
         Collections.shuffle(horizontalPositions);
         for (int y = height -2; y >= 0; y--) {
             for (int x: horizontalPositions) {
-                if (grid[x][y]==Materials.sand && grid[x][y + 1].isSolid()) {
+                if (grid[x][y] == GameEngine.Materials.water && !grid[x][y + 1].equals(GameEngine.Materials.empty)) {
                     if (!grid[x-1][y].isSolid() && !grid[x+1][y].isSolid()) {
                         int direction = rand.nextBoolean() ? -1 : 1;
                         grid[x][y] =  grid[x + direction][y];
-                        grid[x + direction][y] = Materials.sand;
+                        grid[x + direction][y] = GameEngine.Materials.water;
                     }
-                    else if (!grid[x-1][y].isSolid() && grid[x+1][y].isSolid()
-                        && (!grid[x-1][y+1].isSolid() || !grid[x+1][y+1].isSolid())) {
-                        grid[x][y] = grid[x - 1][y];
-                        grid[x - 1][y] = Materials.sand;
-                    }
-                    else if (grid[x-1][y].isSolid() && !grid[x+1][y].isSolid()
-                        && (!grid[x-1][y+1].isSolid() || !grid[x+1][y+1].isSolid())) {
-                        grid[x][y] = grid[x + 1][y];
-                        grid[x + 1][y] = Materials.sand;
-                    }
+
                 }
             }
         }

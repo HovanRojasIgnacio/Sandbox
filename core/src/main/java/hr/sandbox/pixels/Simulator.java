@@ -6,6 +6,5 @@ public interface Simulator {
 
     GameEngine.Materials[][] simulate(GameEngine.Materials[][] grid);
     void dispose();
-
-    Pixmap getPixmap();
+    void resize(int width, int height);
 }

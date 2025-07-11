@@ -39,7 +39,7 @@ public class Main extends ApplicationAdapter {
             gameEngine.printGrid();
         }
         gameEngine.simulate();
-        gameEngine.getPixmap().forEach(pixmap -> texture.draw(pixmap, 0, 0));
+        texture.draw(gameEngine.getPixmap(), 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(texture, 0, 0, width, height);
@@ -58,10 +58,8 @@ public class Main extends ApplicationAdapter {
         this.width = width;
         this.height = height;
 
-        // Dispose old buffers
         texture.dispose();
         gameEngine.resize(width,height);
-        // Create new buffers
         texture = new Texture(width, height, Pixmap.Format.RGBA8888);
 
         batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
