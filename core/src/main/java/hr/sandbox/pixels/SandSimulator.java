@@ -59,9 +59,7 @@ public class SandSimulator implements Simulator{
         updateGravity();
         updateHorizontally();
         drawSand();
-        if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-            printGrid();
-        }
+
         return grid;
     }
     private void updateGravity() {
@@ -112,14 +110,5 @@ public class SandSimulator implements Simulator{
     public Pixmap getPixmap() {
         return pixmap;
     }
-    public void printGrid() {
-        // Outer loop iterates through rows (y-coordinate)
-        for (int y = 0; y < Math.min(grid[0].length, height); y++) {
-            // Inner loop iterates through columns (x-coordinate)
-            for (int x = 0; x < Math.min(grid.length, width); x++) {
-                System.out.print(grid[x][y] + " "); // Note: grid[x][y] remains the same as it's how your data is structured
-            }
-            System.out.println(); // Move to the next line after printing a full row
-        }
-    }
+
 }

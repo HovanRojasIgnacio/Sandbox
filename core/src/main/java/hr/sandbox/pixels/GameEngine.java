@@ -17,21 +17,21 @@ public class GameEngine {
     private int width;
     private int height;
 
-    public Materials[][] materialGrid;
+    public Materials[][] grid;
     public List<Simulator> simulatorList;
 
     public GameEngine(int width, int height) {
-        materialGrid = new Materials[width][height];
+        grid = new Materials[width][height];
         this.width = width;
         this.height = height;
-        Arrays.stream(materialGrid).forEach(m -> Arrays.fill(m, Materials.empty));
+        Arrays.stream(grid).forEach(m -> Arrays.fill(m, Materials.empty));
         simulatorList = new ArrayList<>();
-        simulatorList.add(new SandSimulator(materialGrid,width, height));
+        simulatorList.add(new SandSimulator(grid,width, height));
     }
 
     public void simulate() {
         for(Simulator simulator : simulatorList) {
-            materialGrid = simulator.simulate(materialGrid);
+            grid = simulator.simulate(grid);
 
         }
     }
@@ -45,10 +45,10 @@ public class GameEngine {
         this.height = height;
         Materials[][] newMaterialGrid = new Materials[width][height];
 
-        for (int x = 0; x < Math.min(materialGrid.length, width); x++) {
-            System.arraycopy(materialGrid[x], 0, newMaterialGrid[x], 0, Math.min(materialGrid[0].length, height));
+        for (int x = 0; x < Math.min(grid.length, width); x++) {
+            System.arraycopy(grid[x], 0, newMaterialGrid[x], 0, Math.min(grid[0].length, height));
         }
-        materialGrid = newMaterialGrid;
+        grid = newMaterialGrid;
     }
 
     public List<Pixmap> getPixmap() {
@@ -56,13 +56,12 @@ public class GameEngine {
     }
 
     public void printGrid() {
-        for (int x = 0; x < Math.min(materialGrid.length, width); x++) {
-            for (int y = 0; y < Math.min(materialGrid[0].length, height); y++) {
-                System.out.print(materialGrid[x][y]+" ");
+        for (int y = 0; y < Math.min(grid[0].length, height); y++) {
+            for (int x = 0; x < Math.min(grid.length, width); x++) {
+                System.out.print(grid[x][y] + " ");
             }
             System.out.println();
         }
-
     }
 
 }
