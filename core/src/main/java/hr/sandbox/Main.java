@@ -8,8 +8,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import hr.sandbox.pixels.GameEngine;
-import hr.sandbox.pixels.SandSimulator;
-import hr.sandbox.pixels.Simulator;
 
 public class Main extends ApplicationAdapter {
 
@@ -19,14 +17,13 @@ public class Main extends ApplicationAdapter {
     public Texture texture;
     public SpriteBatch batch;
 
-    private Simulator sandSimulator;
     private GameEngine gameEngine;
 
-    public final static int SCALE = 4;
     @Override
     public void create() {
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
+
         gameEngine = new GameEngine(width, height);
         texture = new Texture(width, height, Pixmap.Format.RGBA8888);
         batch = new SpriteBatch();

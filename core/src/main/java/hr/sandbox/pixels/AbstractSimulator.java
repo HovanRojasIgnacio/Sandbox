@@ -1,5 +1,9 @@
 package hr.sandbox.pixels;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public abstract class AbstractSimulator implements Simulator{
 
     protected int width;
@@ -14,13 +18,18 @@ public abstract class AbstractSimulator implements Simulator{
 
     public GameEngine.Materials[][] simulate(GameEngine.Materials[][] grid) {
         this.grid = grid;
-        updateGravity();
-        updateHorizontally();
-
+        update();
         return grid;
     }
 
-    protected abstract void updateHorizontally();
+    protected abstract void update();
 
-    protected abstract void updateGravity();
+    protected List<Integer> shuffle(){
+        List<Integer> horizontalPositions = new ArrayList<>();
+        for (int x =  width-2; x >0; x--) {
+            horizontalPositions.add(x);
+        }
+        Collections.shuffle(horizontalPositions);
+        return horizontalPositions;
+    }
 }

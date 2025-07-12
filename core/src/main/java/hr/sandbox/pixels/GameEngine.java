@@ -5,16 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Color;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GameEngine {
-
-
-
 
     public enum Materials{
         water(1.0, Color.BLUE,false),
@@ -66,15 +61,11 @@ public class GameEngine {
             int mouseX = Gdx.input.getX();
             int mouseY = Gdx.input.getY();
 
-            if (mouseX >= 0 && mouseX < width && mouseY >= 0 && mouseY < height) {
+            if (mouseX >= 1 && mouseX < width-1 && mouseY >= 0 && mouseY < height) {
                 if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-                    if (grid[mouseX][mouseY] == Materials.empty || grid[mouseX][mouseY] == Materials.water) {
-                        grid[mouseX][mouseY] = Materials.sand;
-                    }
+                    grid[mouseX][mouseY] = Materials.sand;
                 } else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-                    if (grid[mouseX][mouseY] == Materials.empty || grid[mouseX][mouseY] == Materials.sand) {
-                        grid[mouseX][mouseY] = Materials.water;
-                    }
+                    grid[mouseX][mouseY] = Materials.water;
                 }
             }
             if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
