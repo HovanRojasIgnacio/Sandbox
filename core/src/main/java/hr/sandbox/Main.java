@@ -32,6 +32,8 @@ public class Main extends ApplicationAdapter {
     private int currentMouseX = 0;
     private int currentMouseY = 0;
 
+    private final float screenPadding = 10;
+
     @Override
     public void create() {
         Gdx.graphics.setVSync(false);
@@ -54,7 +56,6 @@ public class Main extends ApplicationAdapter {
         addMaterialButton("Empty", GameEngine.Materials.empty);
         uiTable.pack();
         uiTable.setSize(uiTable.getPrefWidth(), uiTable.getPrefHeight());
-        float screenPadding = 10;
         uiTable.setPosition(screenPadding, height - uiTable.getHeight() - screenPadding);
         stage.addActor(uiTable);
 
@@ -166,6 +167,8 @@ public class Main extends ApplicationAdapter {
         gameEngine.resize(width,height);
         texture = new Texture(width, height, Pixmap.Format.RGBA8888);
         stage.getViewport().update(width, height, true);
+        uiTable.setPosition(screenPadding, height - uiTable.getHeight() - screenPadding);
+
         batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
     }
 }

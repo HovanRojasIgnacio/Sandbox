@@ -74,13 +74,34 @@ public class GameEngine {
         if (screenX >= 1 && screenX < width-1 && screenY >= 0 && screenY < height) {
             if (button == Input.Buttons.LEFT) {
                 spawnMaterial(screenX, screenY);
+            }else if(button == Input.Buttons.RIGHT) {
+                brushSize = brushSize + 1;
+                if(brushSize > 4) {
+                    brushSize = 1;
+                }
             }
         }
     }
 
     private void spawnMaterial(int centerX, int centerY) {
-        grid[centerX][centerY] = selectedMaterial;
+        int radius = brushSize - 1;
+        int radiusSquared = radius * radius;
 
+        for (int x = centerX - radius; x <= centerX + radius; x++) {
+            for (int y = centerY - radius; y <= centerY + radius; y++) {
+                if (x >= 0 && x < width && y >= 0 && y < height) {
+                    int dx = x - centerX;
+                    int dy = y - centerY;
+                    int distanceSquared = (dx * dx) + (dy * dy);
+
+                    if (distanceSquared <= radiusSquared) {
+                        if (grid[x][y] != Materials.wood) {
+                            grid[x][y] = selectedMaterial;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void drawGridToPixmap() {
