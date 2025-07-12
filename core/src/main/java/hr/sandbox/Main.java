@@ -27,8 +27,6 @@ public class Main extends ApplicationAdapter {
     private Skin skin;
     private Table uiTable;
 
-    private InputAdapter gameInputAdapter;
-
     private boolean isLeftMouseDown = false;
     private boolean isRightMouseDown = false;
     private int currentMouseX = 0;
@@ -55,7 +53,7 @@ public class Main extends ApplicationAdapter {
 
         stage.addActor(uiTable);
         // --- Input Handling ---
-        gameInputAdapter = new InputAdapter() {
+        InputAdapter gameInputAdapter = new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 if (stage.hit(screenX, screenY, true) != null) {
@@ -68,7 +66,7 @@ public class Main extends ApplicationAdapter {
                 } else if (button == Input.Buttons.RIGHT) {
                     isRightMouseDown = true;
                 }
-                gameEngine.handleTouchInput(screenX, screenY, pointer, button);
+                gameEngine.handleTouchInput(screenX, screenY, button);
                 return true;
             }
 
@@ -131,9 +129,9 @@ public class Main extends ApplicationAdapter {
         if (isLeftMouseDown || isRightMouseDown) {
             if (stage.hit(currentMouseX, currentMouseY, true) == null) {
                 if (isLeftMouseDown) {
-                    gameEngine.handleTouchInput(currentMouseX, currentMouseY, 0, Input.Buttons.LEFT);
+                    gameEngine.handleTouchInput(currentMouseX, currentMouseY, Input.Buttons.LEFT);
                 } else if (isRightMouseDown) {
-                    gameEngine.handleTouchInput(currentMouseX, currentMouseY, 0, Input.Buttons.RIGHT);
+                    gameEngine.handleTouchInput(currentMouseX, currentMouseY, Input.Buttons.RIGHT);
                 }
             }
         }

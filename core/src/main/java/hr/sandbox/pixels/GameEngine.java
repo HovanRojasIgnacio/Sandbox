@@ -65,7 +65,8 @@ public class GameEngine {
     public void setSelectedMaterial(Materials material) {
         selectedMaterial = material;
     }
-    public void handleTouchInput(int screenX, int screenY, int pointer, int button) {
+
+    public void handleTouchInput(int screenX, int screenY, int button) {
         if (screenX >= 1 && screenX < width-1 && screenY >= 0 && screenY < height) {
             if (button == Input.Buttons.LEFT) {
                 grid[screenX][screenY] = selectedMaterial;
@@ -88,7 +89,7 @@ public class GameEngine {
             }
         }
     }
-    
+
     public void simulate() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             for (int x = 0; x < width; x++) {
