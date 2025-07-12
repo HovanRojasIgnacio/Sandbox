@@ -34,6 +34,8 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
+        Gdx.graphics.setVSync(false);
+        Gdx.graphics.setForegroundFPS(200);
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
 
@@ -42,16 +44,18 @@ public class Main extends ApplicationAdapter {
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
         uiTable = new Table(skin);
-        uiTable.setFillParent(true);
         uiTable.top().left();
-        uiTable.pad(10);
 
         // Create buttons for each material
         addMaterialButton("Sand", GameEngine.Materials.sand);
+        addMaterialButton("Wood", GameEngine.Materials.wood);
         addMaterialButton("Water", GameEngine.Materials.water);
         addMaterialButton("Oil", GameEngine.Materials.oil);
         addMaterialButton("Empty", GameEngine.Materials.empty);
-
+        uiTable.pack();
+        uiTable.setSize(uiTable.getPrefWidth(), uiTable.getPrefHeight());
+        float screenPadding = 10;
+        uiTable.setPosition(screenPadding, height - uiTable.getHeight() - screenPadding);
         stage.addActor(uiTable);
 
         InputAdapter gameInputAdapter = new InputAdapter() {
@@ -60,6 +64,7 @@ public class Main extends ApplicationAdapter {
                 if (stage.hit(screenX, screenY, true) != null) {
                     return false; // UI handled it
                 }
+
                 currentMouseX = screenX;
                 currentMouseY = screenY;
                 if (button == Input.Buttons.LEFT) {
@@ -84,10 +89,6 @@ public class Main extends ApplicationAdapter {
 
             @Override
             public boolean touchDragged(int screenX, int screenY, int pointer) {
-                if (stage.hit(screenX, screenY, true) != null) {
-                    return false; // UI handled it
-                }
-
                 currentMouseX = screenX;
                 currentMouseY = screenY;
                 return true;
@@ -119,21 +120,20 @@ public class Main extends ApplicationAdapter {
                 gameEngine.setSelectedMaterial(material);
             }
         });
-        uiTable.add(button).pad(5).width(100).height(40);
-        uiTable.row();
+        uiTable.add(button).pad(5).width(60).height(40);
     }
     @Override
     public void render() {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             gameEngine.printGrid();
         }
+        Gdx.app.log("FPS", String.valueOf(Gdx.graphics.getFramesPerSecond()));
         if (isLeftMouseDown || isRightMouseDown) {
-            if (stage.hit(currentMouseX, currentMouseY, true) == null) {
-                if (isLeftMouseDown) {
-                    gameEngine.handleTouchInput(currentMouseX, currentMouseY, Input.Buttons.LEFT);
-                } else if (isRightMouseDown) {
-                    gameEngine.handleTouchInput(currentMouseX, currentMouseY, Input.Buttons.RIGHT);
-                }
+
+            if (isLeftMouseDown) {
+                gameEngine.handleTouchInput(currentMouseX, currentMouseY, Input.Buttons.LEFT);
+            } else if (isRightMouseDown) {
+                gameEngine.handleTouchInput(currentMouseX, currentMouseY, Input.Buttons.RIGHT);
             }
         }
         gameEngine.simulate();

@@ -13,6 +13,7 @@ public class GameEngine {
 
     public enum Materials{
         water(1.0, Color.BLUE,false),
+        wood(Double.MAX_VALUE, Color.BROWN,true),
         oil(0.8, Color.GRAY,false),
         sand(2.0, Color.YELLOW,true),
         empty(0.0, Color.BLACK,false);
@@ -51,6 +52,8 @@ public class GameEngine {
 
     private Materials selectedMaterial = Materials.sand;
 
+    public int brushSize = 1;
+
     public GameEngine(int width, int height) {
         grid = new Materials[width][height];
         this.width = width;
@@ -60,6 +63,7 @@ public class GameEngine {
         simulatorList.add(new SandSimulator(grid,width, height));
         simulatorList.add(new WaterSimulator(grid,width, height));
         simulatorList.add(new OilSimulator(grid,width, height));
+        simulatorList.add(new WoodSimulator(grid,width, height));
     }
 
     public void setSelectedMaterial(Materials material) {
@@ -69,11 +73,14 @@ public class GameEngine {
     public void handleTouchInput(int screenX, int screenY, int button) {
         if (screenX >= 1 && screenX < width-1 && screenY >= 0 && screenY < height) {
             if (button == Input.Buttons.LEFT) {
-                grid[screenX][screenY] = selectedMaterial;
-            } else if (button == Input.Buttons.RIGHT) {
-                grid[screenX][screenY] = Materials.empty;
+                spawnMaterial(screenX, screenY);
             }
         }
+    }
+
+    private void spawnMaterial(int centerX, int centerY) {
+        grid[centerX][centerY] = selectedMaterial;
+
     }
 
     private void drawGridToPixmap() {
