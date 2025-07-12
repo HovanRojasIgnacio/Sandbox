@@ -11,10 +11,9 @@ import java.util.List;
 
 public class GameEngine {
 
-
-
     public enum Materials{
         water(1.0, Color.BLUE,false),
+        oil(0.8, Color.GRAY,false),
         sand(2.0, Color.YELLOW,true),
         empty(0.0, Color.BLACK,false);
 
@@ -60,6 +59,7 @@ public class GameEngine {
         simulatorList = new ArrayList<>();
         simulatorList.add(new SandSimulator(grid,width, height));
         simulatorList.add(new WaterSimulator(grid,width, height));
+        simulatorList.add(new OilSimulator(grid,width, height));
     }
 
     public void setSelectedMaterial(Materials material) {

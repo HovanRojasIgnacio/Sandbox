@@ -42,17 +42,18 @@ public class Main extends ApplicationAdapter {
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
         uiTable = new Table(skin);
-        uiTable.setFillParent(true); // Make table fill the entire stage
-        uiTable.top().left(); // Align table to top-left of the screen
-        uiTable.pad(10); // Add some padding
+        uiTable.setFillParent(true);
+        uiTable.top().left();
+        uiTable.pad(10);
 
         // Create buttons for each material
         addMaterialButton("Sand", GameEngine.Materials.sand);
         addMaterialButton("Water", GameEngine.Materials.water);
+        addMaterialButton("Oil", GameEngine.Materials.oil);
         addMaterialButton("Empty", GameEngine.Materials.empty);
 
         stage.addActor(uiTable);
-        // --- Input Handling ---
+
         InputAdapter gameInputAdapter = new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
