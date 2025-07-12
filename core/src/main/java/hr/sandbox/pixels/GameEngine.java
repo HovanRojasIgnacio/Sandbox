@@ -11,6 +11,8 @@ import java.util.List;
 
 public class GameEngine {
 
+
+
     public enum Materials{
         water(1.0, Color.BLUE,false),
         sand(2.0, Color.YELLOW,true),
@@ -47,6 +49,9 @@ public class GameEngine {
     public Materials[][] grid;
     public List<Simulator> simulatorList;
     private Pixmap gamePixmap;
+
+    private Materials selectedMaterial = Materials.sand;
+
     public GameEngine(int width, int height) {
         grid = new Materials[width][height];
         this.width = width;
@@ -56,27 +61,20 @@ public class GameEngine {
         simulatorList.add(new SandSimulator(grid,width, height));
         simulatorList.add(new WaterSimulator(grid,width, height));
     }
-    private void handleInput() {
-        if (Gdx.input.isTouched()) {
-            int mouseX = Gdx.input.getX();
-            int mouseY = Gdx.input.getY();
 
-            if (mouseX >= 1 && mouseX < width-1 && mouseY >= 0 && mouseY < height) {
-                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-                    grid[mouseX][mouseY] = Materials.sand;
-                } else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-                    grid[mouseX][mouseY] = Materials.water;
-                }
-            }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-                for (int x = 0; x < width; x++) {
-                    for (int y = 0; y < height; y++) {
-                        grid[x][y] = Materials.empty;
-                    }
-                }
+    public void setSelectedMaterial(Materials material) {
+        selectedMaterial = material;
+    }
+    public void handleTouchInput(int screenX, int screenY, int pointer, int button) {
+        if (screenX >= 1 && screenX < width-1 && screenY >= 0 && screenY < height) {
+            if (button == Input.Buttons.LEFT) {
+                grid[screenX][screenY] = selectedMaterial;
+            } else if (button == Input.Buttons.RIGHT) {
+                grid[screenX][screenY] = Materials.empty;
             }
         }
     }
+
     private void drawGridToPixmap() {
         gamePixmap.setColor(Materials.empty.getColor());
         gamePixmap.fill();
@@ -90,8 +88,15 @@ public class GameEngine {
             }
         }
     }
+    
     public void simulate() {
-        handleInput();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    grid[x][y] = Materials.empty;
+                }
+            }
+        }
         for(Simulator simulator : simulatorList) {
             grid = simulator.simulate(grid);
         }
