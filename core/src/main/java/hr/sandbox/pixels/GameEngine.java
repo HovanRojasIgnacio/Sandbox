@@ -4,10 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Color;
+import hr.sandbox.pixels.simulator.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class GameEngine {
 
@@ -54,16 +53,27 @@ public class GameEngine {
 
     public int brushSize = 1;
 
+    private Map<Materials, Boolean> currentMaterialsOnScreen;
+
     public GameEngine(int width, int height) {
         grid = new Materials[width][height];
         this.width = width;
         this.height = height;
         Arrays.stream(grid).forEach(m -> Arrays.fill(m, Materials.empty));
+        currentMaterialsOnScreen = new HashMap<>();
         simulatorList = new ArrayList<>();
         simulatorList.add(new SandSimulator(grid,width, height));
         simulatorList.add(new WaterSimulator(grid,width, height));
         simulatorList.add(new OilSimulator(grid,width, height));
         simulatorList.add(new WoodSimulator(grid,width, height));
+        resetMaterials();
+    }
+
+    private void resetMaterials() {
+        currentMaterialsOnScreen.put(Materials.empty,true);
+        for (Simulator simulator : simulatorList) {
+            currentMaterialsOnScreen.put(simulator.getMaterial(),false);
+        }
     }
 
     public void setSelectedMaterial(Materials material) {
@@ -97,6 +107,7 @@ public class GameEngine {
                     if (distanceSquared <= radiusSquared) {
                         if (grid[x][y] != Materials.wood) {
                             grid[x][y] = selectedMaterial;
+                            currentMaterialsOnScreen.put(selectedMaterial,true);
                         }
                     }
                 }
@@ -125,9 +136,12 @@ public class GameEngine {
                     grid[x][y] = Materials.empty;
                 }
             }
+            resetMaterials();
         }
         for(Simulator simulator : simulatorList) {
-            grid = simulator.simulate(grid);
+            if(currentMaterialsOnScreen.get(simulator.getMaterial())) {
+                grid = simulator.simulate(grid);
+            }
         }
         drawGridToPixmap();
 

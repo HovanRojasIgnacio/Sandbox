@@ -1,4 +1,4 @@
-package hr.sandbox.pixels;
+package hr.sandbox.pixels.simulator;
 
 import hr.sandbox.pixels.GameEngine.Materials;
 
@@ -9,6 +9,11 @@ public class WoodSimulator extends AbstractSimulator{
 
     public WoodSimulator(Materials[][] grid, int width, int height) {
         super(grid, width, height);
+    }
+
+    @Override
+    public Materials getMaterial() {
+        return Materials.wood;
     }
 
     public void dispose(){

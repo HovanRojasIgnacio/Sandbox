@@ -1,4 +1,6 @@
-package hr.sandbox.pixels;
+package hr.sandbox.pixels.simulator;
+
+import hr.sandbox.pixels.GameEngine;
 
 import java.util.ArrayList;
 import java.util.Collections;

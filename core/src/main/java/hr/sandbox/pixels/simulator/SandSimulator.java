@@ -1,4 +1,4 @@
-package hr.sandbox.pixels;
+package hr.sandbox.pixels.simulator;
 
 import hr.sandbox.pixels.GameEngine.Materials;
 
@@ -47,7 +47,10 @@ public class SandSimulator extends AbstractSimulator{
             }
         }
     }
-
+    @Override
+    public Materials getMaterial() {
+        return Materials.sand;
+    }
 
 
 
